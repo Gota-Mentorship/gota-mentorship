@@ -1,0 +1,123 @@
+openapi: '3.0.2'
+info:
+  title: API Title
+  version: '1.0'
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /mentors:
+    get:
+      parameters:
+        - name: skills
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/SkillModel'
+          explode: false
+        - name: availability
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/AvailabilityModel'
+          explode: false
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: int
+            format: int64
+        - name: next_token
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/UserModel'
+components:
+  schemas:
+    BaseModel:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        id:
+          type: string
+    AvailabilityModel:
+      type: string
+      enum:
+        - MONTHLY
+        - ONCE
+        - WEEKLY
+        - BI_WEEKLY
+    SkillModel:
+      type: string
+      enum:
+        - SOFT_SKILL
+        - SOFTWARE_DEVELOPMENT
+        - PEOPLE_MANAGEMENT
+    UserModel:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            availability:
+              type: string
+              $ref: '#/components/schemas/AvailabilityModel'
+            skills:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkillModel'
+    MentorshipModel:
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            mentee_id:
+              type: string
+            mentor_id:
+              type: string
+            role:
+              type: string
+              enum:
+                - MENTEE
+                - MENTOR
+            status:
+              type: string
+              enum:
+                - CANCELLED
+                - COMPLETED
+                - CREATED
+                - IN_PROGRESS
+            started_at:
+              type: string
+              format: date-time
+            ended_at:
+              type: string
+              format: date-time
