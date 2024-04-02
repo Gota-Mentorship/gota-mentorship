@@ -1,1 +1,1 @@
-# gota-mentorship
+# gota-platform
